@@ -1,0 +1,52 @@
+rules_version = '2';
+
+// Security model for PrepWise.
+//
+// Every Firestore read and write in this application goes through the Firebase
+// Admin SDK in server actions (lib/actions/*.action.ts). The Admin SDK runs
+// with service-account privileges and BYPASSES these rules entirely, so the
+// application keeps working with the strict default-deny below.
+//
+// The browser bundle only ever uses Firebase *Auth* (components/AuthForm.tsx);
+// it never reads Firestore directly. The client Firestore handle exported from
+// firebase/client.ts is currently unused.
+//
+// Denying direct client access matters because NEXT_PUBLIC_FIREBASE_* values
+// are public by design -- anyone can extract them from the JavaScript bundle
+// and talk to Firestore as an authenticated user. Without these rules, a
+// database left in "test mode" would let them read and write every user's
+// records.
+//
+// Deploy with:  firebase deploy --only firestore:rules
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny for all direct client access.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // If you later move any read path to the client SDK, replace the blanket
+    // deny above with ownership-scoped rules like these rather than opening
+    // the database. Writes should stay server-side so scores and interview
+    // records cannot be forged by the client.
+    //
+    // match /users/{userId} {
+    //   allow read: if request.auth != null && request.auth.uid == userId;
+    //   allow write: if false;
+    // }
+    //
+    // match /interviews/{interviewId} {
+    //   allow read: if request.auth != null
+    //               && resource.data.userId == request.auth.uid;
+    //   allow write: if false;
+    // }
+    //
+    // match /feedback/{feedbackId} {
+    //   allow read: if request.auth != null
+    //               && resource.data.userId == request.auth.uid;
+    //   allow write: if false;
+    // }
+  }
+}

@@ -39,3 +39,36 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Firebase service-account keys (never commit these)
+serviceAccount*.json
+service-account*.json
+*-firebase-adminsdk-*.json
+firebase-adminsdk*.json
+.firebase/
+
+# playwright output
+/test-results/
+/playwright-report/
+/blob-report/
+
+# local dev logs
+dev.log
+build.log
+
+# ...but the placeholder template must be committed
+!.env.example
+
+# browser-suite build output, kept out of .next so it cannot clobber the dev server
+/.next-e2e/
+/.next-e2e-dev/
+
+# additional local build output (regenerable, never committed)
+/.next-e2e-final/
+/.next-wizard-check/
+
+# kilo agent worktrees (a second checkout of this repo)
+/.kilo/
+
+# local dev + QA logs
+*.log

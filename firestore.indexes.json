@@ -1,0 +1,76 @@
+{
+  "//": "Deploy with: firebase deploy --only firestore:indexes  (or: node deploy-indexes.mjs)",
+  "indexes": [
+    {
+      "//": "getInterviewsByUserId: where(userId ==).orderBy(createdAt desc)",
+      "collectionGroup": "interviews",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "userId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "//": "getLatestInterviews: orderBy(createdAt desc).where(finalized ==).where(userId !=).",
+      "//2": "Firestore appends the inequality field to the sort using the direction of the last explicit orderBy, hence userId DESCENDING.",
+      "collectionGroup": "interviews",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "finalized",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "userId",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "//": "countSessionsThisPeriod: where(userId ==).where(startedAt >=) -- quota enforcement",
+      "collectionGroup": "sessions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "userId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "startedAt",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "//": "startInterviewSession -> findResumableSession: where(userId ==).where(interviewId ==).where(status ==). Without it the reuse lookup falls back to an unindexed read, and a failed lookup would charge a second interview credit for one retried attempt.",
+      "collectionGroup": "sessions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "userId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "interviewId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        }
+      ]
+    }
+  ],
+  "//feedback": "getFeedbackByInterviewId is where(interviewId ==).where(userId ==) with no orderBy. Firestore serves equality-only queries by merging the automatic single-field indexes, so no composite index is required. Verified against the live project: that query succeeds while the two above raise FAILED_PRECONDITION. A composite index here was removed rather than left in to avoid paying write amplification for an index nothing needs.",
+  "fieldOverrides": []
+}

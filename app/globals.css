@@ -10,17 +10,24 @@
   --color-destructive-100: #f75353;
   --color-destructive-200: #c44141;
 
-  --color-primary-100: #dddfff;
-  --color-primary-200: #cac5fe;
+  /* The band between "good" and "bad". Scores are reported on a four-step
+     scale and there was no colour for the third step, so a developing score
+     had to borrow either the success green or the failure red -- both of
+     which say the wrong thing about a 55. */
+  --color-warning-100: #f0b23f;
+  --color-warning-200: #c9902c;
 
-  --color-light-100: #d6e0ff;
-  --color-light-400: #6870a6;
-  --color-light-600: #4f557d;
-  --color-light-800: #24273a;
+  --color-primary-100: #fff1e8;
+  --color-primary-200: #ffc19e;
 
-  --color-dark-100: #020408;
-  --color-dark-200: #27282f;
-  --color-dark-300: #242633;
+  --color-light-100: #d8d3cc;
+  --color-light-400: #918a82;
+  --color-light-600: #666059;
+  --color-light-800: #2b2926;
+
+  --color-dark-100: #10100f;
+  --color-dark-200: #22211f;
+  --color-dark-300: #2a2825;
 
   --font-mona-sans: "Mona Sans", sans-serif;
 
@@ -63,37 +70,37 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
+  --background: #10100f;
+  --foreground: #f8f5f0;
+  --card: #191817;
+  --card-foreground: #f8f5f0;
+  --popover: #1d1c1a;
+  --popover-foreground: #f8f5f0;
+  --primary: #ffc19e;
+  --primary-foreground: #21140d;
+  --secondary: #262421;
+  --secondary-foreground: #f8f5f0;
+  --muted: #262421;
   --muted-foreground: var(--light-100);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
+  --accent: #32261f;
+  --accent-foreground: #fff1e8;
   --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --border: rgb(255 244 235 / 11%);
+  --input: rgb(255 244 235 / 14%);
+  --ring: #ffc19e;
+  --chart-1: #ffc19e;
+  --chart-2: #d79b76;
+  --chart-3: #f0d5a7;
+  --chart-4: #a8b88f;
+  --chart-5: #cb8d7b;
+  --sidebar: #191817;
+  --sidebar-foreground: #f8f5f0;
+  --sidebar-primary: #ffc19e;
+  --sidebar-primary-foreground: #21140d;
+  --sidebar-accent: #2b2825;
+  --sidebar-accent-foreground: #fff1e8;
+  --sidebar-border: rgb(255 244 235 / 11%);
+  --sidebar-ring: #ffc19e;
 }
 
 @theme inline {
@@ -140,15 +147,31 @@
   }
   body {
     @apply bg-background text-foreground;
+    min-width: 320px;
+    font-family: var(--font-mona-sans), system-ui, sans-serif;
+    font-feature-settings: "ss01" 1, "ss03" 1;
+    /* Only the flat base sits here now. The warm glow that used to be a static
+       radial gradient is drawn by .aurora instead, so it can move. */
+    background-image: linear-gradient(to bottom, #121210, #0c0c0b 52rem);
+    background-attachment: fixed;
   }
   p {
     @apply text-light-100;
   }
   h2 {
-    @apply text-3xl font-semibold;
+    @apply text-3xl font-semibold tracking-[-0.035em];
   }
   h3 {
-    @apply text-2xl font-semibold;
+    @apply text-2xl font-semibold tracking-[-0.025em];
+  }
+
+  ::selection {
+    color: #21140d;
+    background: #ffc19e;
+  }
+
+  :focus-visible {
+    scroll-margin: 7rem;
   }
   ul {
     @apply list-disc list-inside;
@@ -159,6 +182,120 @@
 }
 
 @layer components {
+  /* --- Moving background -------------------------------------------------
+     A fixed, non-interactive layer behind every page. `z-index: -1` puts it
+     above the canvas (which body's background paints) but below all content,
+     so no page needs its own stacking rules. `.root-layout` and
+     `.auth-layout` are transparent, so it shows through both. */
+  .aurora {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+    /* Keep the animation's repaints from invalidating the rest of the page. */
+    contain: strict;
+  }
+
+  .aurora-orb {
+    position: absolute;
+    display: block;
+    border-radius: 50%;
+    /* Transform-only animation keeps this on the compositor thread. */
+    will-change: transform;
+  }
+
+  .aurora-orb-1 {
+    top: -18rem;
+    left: -12rem;
+    width: 48rem;
+    height: 48rem;
+    background: radial-gradient(circle, rgb(255 193 158 / 0.15), transparent 62%);
+    animation: aurora-drift-1 34s ease-in-out infinite;
+  }
+
+  .aurora-orb-2 {
+    top: 22%;
+    right: -20rem;
+    width: 42rem;
+    height: 42rem;
+    background: radial-gradient(circle, rgb(220 143 103 / 0.13), transparent 64%);
+    animation: aurora-drift-2 41s ease-in-out infinite;
+  }
+
+  .aurora-orb-3 {
+    bottom: -24rem;
+    left: 26%;
+    width: 40rem;
+    height: 40rem;
+    background: radial-gradient(circle, rgb(240 213 167 / 0.08), transparent 66%);
+    animation: aurora-drift-3 47s ease-in-out infinite;
+  }
+
+  .aurora-grid {
+    position: absolute;
+    /* Oversized so the pan never exposes an edge. */
+    inset: -8%;
+    display: block;
+    background-image:
+      linear-gradient(rgb(255 244 235 / 0.022) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(255 244 235 / 0.022) 1px, transparent 1px);
+    background-size: 46px 46px;
+    /* Strongest at the top, gone by the fold, so it never sits behind body copy. */
+    mask-image: radial-gradient(ellipse 90% 55% at 50% 0%, black, transparent 76%);
+    -webkit-mask-image: radial-gradient(ellipse 90% 55% at 50% 0%, black, transparent 76%);
+    will-change: transform;
+    /* Travels exactly one tile, so the loop has no visible seam. */
+    animation: aurora-grid-pan 38s linear infinite;
+  }
+
+  @keyframes aurora-drift-1 {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+      transform: translate3d(7rem, 4rem, 0) scale(1.12);
+    }
+  }
+
+  @keyframes aurora-drift-2 {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1.08);
+    }
+    50% {
+      transform: translate3d(-6rem, 5rem, 0) scale(1);
+    }
+  }
+
+  @keyframes aurora-drift-3 {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+      transform: translate3d(5rem, -4rem, 0) scale(1.14);
+    }
+  }
+
+  @keyframes aurora-grid-pan {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(46px, 46px, 0);
+    }
+  }
+
+  /* Motion is decoration here -- the layer keeps its colour, just stops moving. */
+  @media (prefers-reduced-motion: reduce) {
+    .aurora-orb,
+    .aurora-grid {
+      animation: none;
+    }
+  }
+
   .btn-call {
     @apply inline-block px-7 py-3 font-bold text-sm leading-5 text-white transition-colors duration-150 bg-success-100 border border-transparent rounded-full shadow-sm focus:outline-none focus:shadow-2xl active:bg-success-200 hover:bg-success-200 min-w-28 cursor-pointer items-center justify-center overflow-visible;
 
@@ -175,10 +312,11 @@
     @apply flex min-h-14 w-full items-center justify-center gap-1.5 rounded-md;
   }
   .btn-primary {
-    @apply w-fit !bg-primary-200 !text-dark-100 hover:!bg-primary-200/80 !rounded-full !font-bold px-5 cursor-pointer min-h-10;
+    @apply w-fit !bg-primary-200 !text-[#21140d] hover:!bg-[#ffd1b7] !rounded-xl !font-bold px-5 cursor-pointer min-h-11 transition-[background-color,transform,box-shadow] active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-200;
+    box-shadow: 0 8px 24px -16px rgb(255 193 158 / 0.8);
   }
   .btn-secondary {
-    @apply w-fit !bg-dark-200 !text-primary-200 hover:!bg-dark-200/80 !rounded-full !font-bold px-5 cursor-pointer min-h-10;
+    @apply w-fit !bg-dark-200 !text-primary-100 hover:!bg-dark-300 !rounded-xl !font-bold px-5 cursor-pointer min-h-11 border border-white/10 transition-[background-color,transform] active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-200;
   }
 
   .btn-upload {
@@ -201,11 +339,11 @@
     }
 
     .input {
-      @apply !bg-dark-200 !rounded-full !min-h-12 !px-5 placeholder:!text-light-100;
+      @apply !bg-dark-200 !rounded-xl !min-h-12 !px-5 placeholder:!text-light-100/55;
     }
 
     .btn {
-      @apply !w-full !bg-primary-200 !text-dark-100 hover:!bg-primary-200/80 !rounded-full !min-h-10 !font-bold !px-5 cursor-pointer;
+      @apply !w-full !bg-primary-200 !text-[#21140d] hover:!bg-[#ffd1b7] !rounded-xl !min-h-11 !font-bold !px-5 cursor-pointer;
     }
   }
 
@@ -262,7 +400,154 @@
   }
 
   .root-layout {
-    @apply flex mx-auto max-w-7xl flex-col gap-12 my-12 px-16 max-sm:px-4 max-sm:my-8;
+    @apply mx-auto flex max-w-[86rem] flex-col gap-10 px-3 pb-10 pt-3 sm:gap-12 sm:px-6 sm:pb-14 sm:pt-5 lg:px-10;
+  }
+
+  .dashboard-nav {
+    @apply sticky top-2 z-40 flex min-h-16 items-center justify-between gap-2 rounded-2xl border border-white/10 bg-[#151412]/95 px-2.5 py-2 shadow-2xl shadow-black/25 backdrop-blur-lg sm:top-4 sm:px-3;
+  }
+
+  .brand-link {
+    @apply flex min-w-0 shrink items-center gap-2.5 rounded-xl pr-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-200;
+  }
+
+  .brand-mark {
+    @apply flex size-10 shrink-0 items-center justify-center rounded-xl border border-primary-200/15 bg-primary-200/[0.055];
+  }
+
+  .nav-actions {
+    @apply flex min-w-0 shrink-0 items-center gap-0.5 sm:gap-1;
+  }
+
+  .nav-link {
+    @apply inline-flex min-h-11 min-w-10 items-center justify-center gap-2 rounded-xl px-2 text-sm font-medium text-light-100/75 transition-[color,background-color,transform] hover:bg-white/[0.055] hover:text-white active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-200 sm:px-3 [&_svg]:size-[17px];
+  }
+
+  .nav-link[aria-current="page"] {
+    @apply bg-white/[0.07] text-white;
+  }
+
+  .nav-link-accent {
+    @apply text-primary-100 hover:bg-primary-200/10 hover:text-primary-200;
+  }
+
+  .nav-user {
+    @apply ml-0.5 flex size-9 shrink-0 items-center justify-center rounded-xl border border-primary-200/25 bg-primary-200/[0.08] text-[11px] font-bold text-primary-100 sm:size-10;
+  }
+
+  .nav-signout {
+    @apply block;
+  }
+
+  .nav-signout button {
+    @apply min-h-11 rounded-xl px-2 font-medium transition-colors hover:bg-white/[0.055] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-200 sm:px-2.5;
+  }
+
+  @media (max-width: 479px) {
+    .nav-signout button {
+      font-size: 0;
+    }
+    .nav-signout button::after {
+      content: "Out";
+      font-size: 0.7rem;
+    }
+  }
+
+  .dashboard-hero {
+    @apply relative isolate overflow-hidden rounded-3xl border border-primary-200/15 bg-gradient-to-br from-[#29231f] via-[#191816] to-[#10100f] px-5 py-8 shadow-2xl shadow-black/20 sm:px-10 sm:py-12;
+  }
+
+  .dashboard-orb {
+    @apply absolute -right-16 -top-24 size-80 rounded-full bg-primary-200/15 blur-3xl;
+  }
+
+  .empty-dashboard {
+    @apply flex flex-col items-start justify-between gap-5 rounded-2xl border border-white/10 bg-white/[0.025] p-6 sm:flex-row sm:items-center;
+  }
+
+  .quick-practice-card {
+    @apply flex min-h-52 flex-col gap-3 rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.055] to-white/[0.015] p-5 transition-[transform,border-color,box-shadow] duration-200 hover:-translate-y-1 hover:border-primary-200/35 hover:shadow-xl hover:shadow-black/20 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-primary-200;
+  }
+
+  .quick-practice-icon {
+    @apply flex size-10 items-center justify-center rounded-xl bg-primary-200/10 text-primary-200 [&_svg]:size-5;
+  }
+
+  .analytics-column {
+    @apply block w-full origin-bottom rounded-t-md bg-gradient-to-t from-[#c7805d] to-[#ffd6b9] transition-[filter] group-hover:brightness-110;
+  }
+
+  .setup-shell {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border: 1px solid rgb(255 220 199 / 0.14);
+    background:
+      radial-gradient(circle at 92% 0%, rgb(255 193 158 / 0.105), transparent 26rem),
+      linear-gradient(155deg, rgb(28 27 25 / 0.99), rgb(15 15 14 / 0.99));
+    box-shadow: 0 28px 80px -40px rgb(0 0 0 / 0.9);
+  }
+
+  .setup-shell::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.22;
+    background-image:
+      linear-gradient(rgb(255 255 255 / 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(255 255 255 / 0.025) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: linear-gradient(to bottom, black, transparent 70%);
+  }
+
+  .setup-progress-fill {
+    background: linear-gradient(90deg, #dc8f67, #ffc19e);
+    box-shadow: 0 0 16px rgb(255 193 158 / 0.32);
+    transition: width 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .setup-choice {
+    transition:
+      transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 180ms ease,
+      background-color 180ms ease,
+      box-shadow 180ms ease;
+  }
+
+  .setup-choice:not(:disabled):hover {
+    transform: translateY(-3px);
+    border-color: rgb(255 193 158 / 0.34);
+    box-shadow: 0 16px 32px -22px rgb(0 0 0 / 0.9);
+  }
+
+  .setup-choice:not(:disabled):active {
+    transform: translateY(-1px) scale(0.99);
+  }
+
+  .setup-choice.is-selected {
+    box-shadow: inset 3px 0 0 #ffc19e, 0 16px 36px -30px rgb(255 193 158 / 0.65);
+  }
+
+  .setup-chip {
+    transition: transform 160ms ease, background-color 160ms ease, border-color 160ms ease;
+  }
+
+  .setup-chip:not(:disabled):hover {
+    transform: translateY(-1px);
+  }
+
+  .setup-chip:not(:disabled):active {
+    transform: scale(0.97);
+  }
+
+  .setup-dialog-backdrop {
+    animation: setupBackdropIn 180ms ease-out both;
+  }
+
+  .setup-dialog-panel {
+    animation: setupDialogIn 240ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 
   .card-cta {
@@ -270,7 +555,7 @@
   }
 
   .interviews-section {
-    @apply flex flex-wrap gap-4 max-lg:flex-col w-full items-stretch;
+    @apply grid w-full grid-cols-1 items-stretch gap-4 md:grid-cols-2 xl:grid-cols-3;
   }
 
   .interview-text {
@@ -295,7 +580,7 @@
 }
 
 @utility dark-gradient {
-  @apply bg-gradient-to-b from-[#1A1C20] to-[#08090D];
+  @apply bg-gradient-to-b from-[#201f1d] to-[#11110f];
 }
 
 @utility border-gradient {
@@ -307,11 +592,11 @@
 }
 
 @utility blue-gradient-dark {
-  @apply bg-gradient-to-b from-[#171532] to-[#08090D];
+  @apply bg-gradient-to-b from-[#2a231f] to-[#11110f];
 }
 
 @utility blue-gradient {
-  @apply bg-gradient-to-l from-[#FFFFFF] to-[#CAC5FE];
+  @apply bg-gradient-to-l from-[#fff8f3] to-[#ffc19e];
 }
 
 @utility flex-center {
@@ -330,5 +615,173 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Motion
+ *
+ * Extends the existing `animate-fadeIn` convention rather than introducing a
+ * second system. Every animation here is CSS rather than JavaScript, which
+ * matters more than usual in this app: the interview screen is already running a
+ * camera preview, a face detector and a live audio graph, and animating from
+ * React would add render work to the one screen that can least afford it.
+ *
+ * Only `opacity` and `transform` are animated. Both are composited on the GPU,
+ * so none of this touches layout or forces a reflow.
+ *
+ * Everything is disabled under `prefers-reduced-motion` at the bottom of this
+ * block. Motion sickness and vestibular disorders are real, and an interview is
+ * a stressful enough setting without the interface moving underneath someone.
+ * ------------------------------------------------------------------------- */
+
+@utility animate-rise {
+  animation: rise 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@utility animate-slide-in {
+  animation: slideIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes setupBackdropIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes setupDialogIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* A slow, low-contrast pulse for "the system is working on it" states. */
+@utility animate-breathe {
+  animation: breathe 2.4s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/**
+ * Staggers children so a list assembles instead of appearing all at once.
+ *
+ * Capped at eight: past that the last card would be waiting most of a second,
+ * which reads as slowness rather than polish. Anything beyond the eighth simply
+ * uses the longest delay.
+ */
+@utility stagger-children {
+  & > * {
+    animation: rise 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  & > *:nth-child(1) { animation-delay: 0ms; }
+  & > *:nth-child(2) { animation-delay: 60ms; }
+  & > *:nth-child(3) { animation-delay: 120ms; }
+  & > *:nth-child(4) { animation-delay: 180ms; }
+  & > *:nth-child(5) { animation-delay: 240ms; }
+  & > *:nth-child(6) { animation-delay: 300ms; }
+  & > *:nth-child(7) { animation-delay: 360ms; }
+  & > *:nth-child(n + 8) { animation-delay: 420ms; }
+}
+
+/** A card that responds to the pointer without shifting the layout around it. */
+@utility lift-on-hover {
+  transition:
+    transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px -12px rgb(0 0 0 / 0.55);
+  }
+}
+
+/**
+ * Honour the system-level request for less motion.
+ *
+ * Not `animation: none`: several of these use `both` fill mode to set a final
+ * opacity, and removing the animation outright would leave those elements
+ * invisible. Collapsing the duration instead lands every animation on its end
+ * state immediately.
+ */
+/**
+ * The score ring drawing itself in.
+ *
+ * Animates `stroke-dashoffset` from a full ring to the score's offset, which
+ * the element sets inline as `--ring-offset`. The `both` fill mode matters: the
+ * final frame is what holds the ring at the right proportion, so under the
+ * reduced-motion rule below the animation simply completes instantly instead of
+ * being removed and leaving a full circle.
+ */
+@utility animate-ring-fill {
+  animation: ringFill 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes ringFill {
+  from {
+    stroke-dashoffset: var(--ring-dash, 999);
+    opacity: 0.4;
+  }
+  to {
+    stroke-dashoffset: var(--ring-offset);
+    opacity: 1;
+  }
+}
+
+/** A category bar sweeping out from its left edge. */
+@utility animate-bar-fill {
+  animation: barFill 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes barFill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

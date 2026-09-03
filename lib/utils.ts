@@ -13,32 +13,26 @@ const normalizeTechName = (tech: string) => {
   return mappings[key as keyof typeof mappings];
 };
 
-const checkIconExists = async (url: string) => {
-  try {
-    const response = await fetch(url, { method: "HEAD" });
-    return response.ok; // Returns true if the icon exists
-  } catch {
-    return false;
-  }
-};
-
-export const getTechLogos = async (techArray: string[]) => {
-  const logoURLs = techArray.map((tech) => {
+/**
+ * Resolves display URLs without doing network work during render.
+ *
+ * This helper is consumed by both Server and Client Components. Keeping it
+ * synchronous is important: InterviewCard is rendered inside the client-side
+ * filterable InterviewList, and an async component below that boundary is not
+ * supported by React/Next.js. The catalogue is curated, so an unknown label can
+ * deterministically use the local fallback instead of issuing one HEAD request
+ * per icon on every render.
+ */
+export const getTechLogos = (techArray: string[]) => {
+  return techArray.map((tech) => {
     const normalized = normalizeTechName(tech);
     return {
       tech,
-      url: `${techIconBaseURL}/${normalized}/${normalized}-original.svg`,
+      url: normalized
+        ? `${techIconBaseURL}/${normalized}/${normalized}-original.svg`
+        : "/tech.svg",
     };
   });
-
-  const results = await Promise.all(
-    logoURLs.map(async ({ tech, url }) => ({
-      tech,
-      url: (await checkIconExists(url)) ? url : "/tech.svg",
-    }))
-  );
-
-  return results;
 };
 
 export const getRandomInterviewCover = () => {

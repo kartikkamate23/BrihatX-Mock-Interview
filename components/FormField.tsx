@@ -14,6 +14,7 @@ interface FormFieldProps<T extends FieldValues> {
   label: string;
   placeholder?: string;
   type?: "text" | "email" | "password";
+  autoComplete?: string;
 }
 
 const FormField = <T extends FieldValues>({
@@ -22,6 +23,7 @@ const FormField = <T extends FieldValues>({
   label,
   placeholder,
   type = "text",
+  autoComplete,
 }: FormFieldProps<T>) => {
   return (
     <Controller
@@ -34,6 +36,7 @@ const FormField = <T extends FieldValues>({
             <Input
               className="input"
               type={type}
+              autoComplete={autoComplete}
               placeholder={placeholder}
               {...field}
             />

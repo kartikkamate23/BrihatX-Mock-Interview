@@ -7,12 +7,12 @@
   
   <div>
     <img src="https://img.shields.io/badge/-Next.JS-black?style=for-the-badge&logoColor=white&logo=nextdotjs&color=black" alt="next.js" />
-    <img src="https://img.shields.io/badge/-Vapi-white?style=for-the-badge&color=5dfeca" alt="vapi" />
+    <img src="https://img.shields.io/badge/-Gemini%20Live-white?style=for-the-badge&color=5dfeca" alt="gemini live" />
     <img src="https://img.shields.io/badge/-Tailwind_CSS-black?style=for-the-badge&logoColor=white&logo=tailwindcss&color=06B6D4" alt="tailwindcss" />
     <img src="https://img.shields.io/badge/-Firebase-black?style=for-the-badge&logoColor=white&logo=firebase&color=DD2C00" alt="firebase" />
   </div>
 
-  <h3 align="center">Prepwise: A job interview preparation platform powered by Vapi AI Voice agents</h3>
+  <h3 align="center">Prepwise: A job interview preparation platform powered by the Gemini Live API</h3>
 
    <div align="center">
      Build this project step by step with our detailed tutorial on <a href="https://www.youtube.com/@javascriptmastery/videos" target="_blank"><b>JavaScript Mastery</b></a> YouTube. Join the JSM family!
@@ -39,7 +39,7 @@ If you prefer visual learning, this is the perfect resource for you. Follow our 
 
 ## <a name="introduction">🤖 Introduction</a>
 
-Built with Next.js for the user interface and backend logic, Firebase for authentication and data storage, styled with TailwindCSS and using Vapi's voice agents, Prepwise is a website project designed to help you learn integrating AI models with your apps. The platform offers a sleek and modern experience for job interview preparation.
+Built with Next.js for the user interface and backend logic, Firebase for authentication and data storage, styled with TailwindCSS and using the Gemini Live API for real-time voice, Prepwise is a website project designed to help you learn integrating AI models with your apps. The platform offers a sleek and modern experience for job interview preparation.
 
 If you're getting started and need assistance or face any bugs, join our active Discord community with over **50k+** members. It's a place where people help each other out.
 
@@ -50,7 +50,7 @@ If you're getting started and need assistance or face any bugs, join our active 
 - Next.js
 - Firebase
 - Tailwind CSS
-- Vapi AI
+- Google Gemini (Live API for voice, text models for questions and feedback)
 - shadcn/ui
 - Google Gemeni
 - Zod
@@ -59,7 +59,7 @@ If you're getting started and need assistance or face any bugs, join our active 
 
 👉 **Authentication**: Sign Up and Sign In using password/email authentication handled by Firebase.
 
-👉 **Create Interviews**: Easily generate job interviews with help of Vapi voice assistants and Google Gemini.
+👉 **Create Interviews**: Set up an interview through a short wizard -- role, topics, experience level, interviewer, and length -- and Google Gemini writes the topic guide.
 
 👉 **Get feedback from AI**: Take the interview with AI voice agent, and receive instant feedback based on your conversation.
 
@@ -105,8 +105,6 @@ npm install
 Create a new file named `.env.local` in the root of your project and add the following content:
 
 ```env
-NEXT_PUBLIC_VAPI_WEB_TOKEN=
-NEXT_PUBLIC_VAPI_WORKFLOW_ID=
 
 GOOGLE_GENERATIVE_AI_API_KEY=
 
@@ -124,7 +122,9 @@ FIREBASE_CLIENT_EMAIL=
 FIREBASE_PRIVATE_KEY=
 ```
 
-Replace the placeholder values with your actual **[Firebase](https://firebase.google.com/)**, **[Vapi](https://vapi.ai/?utm_source=youtube&utm_medium=video&utm_campaign=jsmastery_recruitingpractice&utm_content=paid_partner&utm_term=recruitingpractice)** credentials.
+Replace the placeholder values with your actual **[Firebase](https://firebase.google.com/)** and **[Google AI Studio](https://aistudio.google.com/apikey)** credentials.
+
+There is deliberately no `NEXT_PUBLIC_` key for Gemini. The browser never holds the API key: `/api/live-token` mints a single-use ephemeral token per interview session, after checking that the caller is signed in and that the session is theirs.
 
 **Running the Project**
 
@@ -535,7 +535,7 @@ export const getRandomInterviewCover = () => {
 </details>
 
 <details>
-<summary><code>Generate questions prompt (/app/api/vapi/generate/route.tsx):</code></summary>
+<summary><code>Generate questions prompt (/app/api/interviews/generate/route.ts):</code></summary>
 
 ```javascript
 `Prepare questions for a job interview.
