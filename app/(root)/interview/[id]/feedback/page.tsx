@@ -14,6 +14,7 @@ import ScoreRing from "@/components/ScoreRing";
 import AttentionSummaryPanel from "@/components/AttentionSummaryPanel";
 import ResumeFeedbackReport from "@/components/ResumeFeedbackReport";
 import VisaFeedbackReport from "@/components/VisaFeedbackReport";
+import QuestionByQuestionFeedback from "@/components/QuestionByQuestionFeedback";
 import { scoreBand } from "@/lib/score";
 import { getCurrentUser } from "@/lib/actions/auth.action";
 import {
@@ -175,6 +176,26 @@ const Feedback = async ({ params }: RouteParams) => {
               />
             ))}
           </div>
+        </Panel>
+      )}
+
+      {feedback.questionReviews && feedback.questionReviews.length > 0 && (
+        <QuestionByQuestionFeedback reviews={feedback.questionReviews} />
+      )}
+
+      {(!feedback.questionReviews || feedback.questionReviews.length === 0) && (
+        <Panel>
+          <PanelHeader
+            title="Question-by-question review"
+            hint="This report was generated before detailed answer coaching was enabled."
+          />
+          <p className="text-sm leading-6 text-light-100">
+            Retake this interview to receive every question, your exact response,
+            specific mistakes, improvement steps, and an improved example answer.
+          </p>
+          <Link href={`/interview/${id}`} className="mt-4 inline-flex text-sm font-semibold text-primary-200 underline underline-offset-4">
+            Retake for detailed feedback
+          </Link>
         </Panel>
       )}
 

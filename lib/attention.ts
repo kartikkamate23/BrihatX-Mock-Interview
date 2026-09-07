@@ -25,6 +25,8 @@ export type AttentionState =
 
 export interface AttentionEvent {
   type: "attention_warning";
+  /** The local camera condition that raised this warning, when available. */
+  reason?: string;
   /** ms since the interview started. */
   startedAt: number;
   duration: number | null;

@@ -20,6 +20,29 @@ import {
   describeModelError,
 } from "@/lib/ai";
 
+function questionReviewInstructions(
+  type: ReturnType<typeof resolveInterviewType>
+): string {
+  const safety = type === "visa"
+    ? "For visa answers, never invent personal facts, dates, finances, documents, or travel history. Use clear [replace with your detail] placeholders when facts are missing."
+    : type === "resume"
+      ? "Never invent projects, metrics, employers, tools, or responsibilities that are not supported by the transcript or resume context. Use a clearly marked placeholder where evidence is missing."
+      : "Do not invent personal experience, achievements, numbers, or technical decisions the candidate did not provide. Use a clearly marked placeholder when needed.";
+
+  return `QUESTION-BY-QUESTION REVIEW (required):
+- Produce exactly one questionReviews item for every substantive interviewer question, in transcript order. Ignore greetings, acknowledgements, and closing pleasantries.
+- Copy the interviewer question verbatim into question; do not rewrite it.
+- Pair each question with everything the candidate said before the next substantive interviewer question.
+- Copy that candidate response verbatim into candidateAnswer, joining consecutive candidate transcript lines in order. Do not summarize or correct it. If they did not answer, write exactly "No answer provided."
+- score is for that individual answer only, from 0 to 100.
+- whatWasGood must cite concrete strengths from that answer; use an empty array if there are none.
+- mistakes must identify exact factual errors, missing details, weak structure, filler, irrelevance, or unclear wording. Do not manufacture a mistake.
+- howToImprove must give specific, usable steps for that exact answer.
+- improvedAnswer must directly answer the same question in a clear, interview-ready structure. It is an example, not a claim about what the candidate really did.
+- Keep each improved answer concise enough to speak naturally in an interview.
+- ${safety}`;
+}
+
 /**
  * The scoring prompt for each interview type.
  *
@@ -62,7 +85,9 @@ Then fill in the detail sections. Quote or closely paraphrase what was actually 
 CRITICAL WORDING RULES:
 - This is practice. You must NEVER state or imply that a real visa would be approved, refused, granted or denied, and you must not estimate any probability of either.
 - Phrase every criticism as something to improve: "this answer would be stronger if it named the city and the dates", never "this answer would get you refused".
-- Do not speculate about what a real officer would conclude.`;
+- Do not speculate about what a real officer would conclude.
+
+${questionReviewInstructions(type)}`;
   }
 
   if (type === "resume") {
@@ -87,7 +112,9 @@ Then fill in the detail sections, quoting or closely paraphrasing what was actua
 CRITICAL WORDING RULES:
 - Never accuse the candidate of lying, exaggerating or misrepresenting their resume. If a claim was thinly substantiated, say the ANSWER lacked specifics and show what a stronger one would contain.
 - \`resumeRecommendations\` is about improving the document: which claims need concrete evidence attached, and which real strengths are undersold.
-- \`targetRoleGap\` compares their demonstrated background with the target role fairly, and says what to build or study. It is career advice, not a verdict.`;
+- \`targetRoleGap\` compares their demonstrated background with the target role fairly, and says what to build or study. It is career advice, not a verdict.
+
+${questionReviewInstructions(type)}`;
   }
 
   if (type === "communication") {
@@ -105,7 +132,9 @@ Score the candidate from 0 to 100 in the following areas, and do not add categor
 - **Cultural & Role Fit**: Professionalism, tone, and how they came across.
 - **Confidence & Clarity**: Confidence, engagement, and whether the point landed.
 
-Be specific and cite what was actually said. Where an answer rambled or buried its point, say so and show a tighter version.`;
+Be specific and cite what was actually said. Where an answer rambled or buried its point, say so and show a tighter version.
+
+${questionReviewInstructions(type)}`;
   }
 
   return `You are an AI interviewer analyzing a mock interview. Your task is to evaluate the candidate based on structured categories. Be thorough and detailed in your analysis. Do not be lenient with the candidate. If there are mistakes or areas for improvement, point them out.
@@ -121,7 +150,9 @@ Please score the candidate from 0 to 100 in the following areas. Do not add cate
 - **Technical Knowledge**: Understanding of key concepts for the role.
 - **Problem-Solving**: Ability to analyze problems and propose solutions.
 - **Cultural & Role Fit**: Alignment with company values and job role.
-- **Confidence & Clarity**: Confidence in responses, engagement, and clarity.`;
+- **Confidence & Clarity**: Confidence in responses, engagement, and clarity.
+
+${questionReviewInstructions(type)}`;
 }
 
 export async function createFeedback(params: CreateFeedbackParams) {
@@ -266,6 +297,7 @@ export async function createFeedback(params: CreateFeedbackParams) {
       strengths: object.strengths,
       areasForImprovement: object.areasForImprovement,
       finalAssessment: object.finalAssessment,
+      questionReviews: object.questionReviews,
       createdAt: new Date().toISOString(),
       // Omitted entirely rather than written as undefined, which Firestore rejects.
       ...("visa" in object && object.visa ? { visa: object.visa } : {}),

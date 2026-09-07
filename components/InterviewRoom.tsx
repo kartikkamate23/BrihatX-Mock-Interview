@@ -134,8 +134,12 @@ const InterviewRoom = ({
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="card-border w-full">
-        <div className="relative aspect-video w-full overflow-hidden rounded-2xl dark-gradient">
+      <div className={cn(
+        "camera-stage w-full",
+        attention.warningActive && "camera-stage-warning",
+        attention.view.severity === "CRITICAL" && "camera-stage-critical"
+      )}>
+        <div className="relative aspect-video w-full overflow-hidden rounded-[1.35rem] bg-[#020708]">
           <video
             ref={media.videoRef}
             autoPlay
@@ -147,6 +151,14 @@ const InterviewRoom = ({
               !cameraLive && "invisible"
             )}
           />
+
+          {cameraLive && session.canEnd && (
+            <div className="pointer-events-none absolute inset-[12%_27%_15%] rounded-[48%] border border-dashed border-white/25" aria-hidden>
+              <span className="absolute -top-7 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-black/55 px-2.5 py-1 text-[10px] font-medium tracking-wide text-white/70">
+                Keep face inside guide
+              </span>
+            </div>
+          )}
 
           {!cameraLive && (
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-dark-100/30 p-6 text-center">
@@ -212,12 +224,18 @@ const InterviewRoom = ({
           {attention.warningActive && (
             <div
               role="alert"
-              className="absolute inset-x-4 top-20 rounded-xl border border-destructive-100/80 bg-destructive-200/90 px-4 py-3 backdrop-blur-sm sm:top-16 sm:max-w-md"
+              className={cn(
+                "proctor-warning absolute inset-x-4 top-20 px-4 py-3 sm:top-16 sm:max-w-xl",
+                attention.view.severity === "CRITICAL" && "is-critical"
+              )}
             >
-              <p className="text-sm font-bold text-white">Attention warning</p>
-              <p className="text-xs text-white/90">
-                Please return your focus to the interview camera.
-              </p>
+              <div className="flex items-start gap-3">
+                <span className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full bg-white/15 text-sm font-black" aria-hidden>!</span>
+                <div>
+                  <p className="text-sm font-bold text-white">{attention.view.title}</p>
+                  <p className="mt-0.5 text-xs leading-5 text-white/90">{attention.view.message}</p>
+                </div>
+              </div>
             </div>
           )}
 
@@ -247,13 +265,47 @@ const InterviewRoom = ({
                 />
                 {media.micLive ? "Mic on" : "Mic off"}
               </span>
-              <span className="rounded-full border border-primary-200/25 px-2 py-1 text-[11px] text-light-100/90">
-                {attention.ready ? "Attention monitor ready" : "Attention monitor loading"}
+              <span className={cn(
+                "rounded-full border px-2 py-1 text-[11px]",
+                attention.warningActive
+                  ? "border-destructive-100/60 bg-destructive-100/10 text-destructive-100"
+                  : "border-primary-200/30 bg-primary-200/10 text-primary-100"
+              )}>
+                {attention.ready
+                  ? attention.warningActive
+                    ? `${attention.warningCount} warning${attention.warningCount === 1 ? "" : "s"}`
+                    : "Strict monitor active"
+                  : "Strict monitor loading"}
               </span>
             </div>
           </div>
         </div>
       </div>
+
+      {session.canEnd && (
+        <div className="proctor-status-grid" aria-label="Live interview checks">
+          <MonitorCheck
+            label="Face detection"
+            value={attention.view.faceStatus === "multiple" ? "Multiple detected" : attention.view.faceStatus === "not_detected" ? "Not detected" : "One face"}
+            ok={attention.view.faceStatus === "detected"}
+          />
+          <MonitorCheck
+            label="Eye contact"
+            value={attention.view.attentionStatus === "ok" ? "Camera focused" : "Look at camera"}
+            ok={attention.view.attentionStatus === "ok"}
+          />
+          <MonitorCheck
+            label="Camera feed"
+            value={attention.view.cameraStatus === "active" ? "Continuous" : "Interrupted"}
+            ok={attention.view.cameraStatus === "active"}
+          />
+          <MonitorCheck
+            label="Visibility"
+            value={attention.view.poorQuality ? "Improve lighting" : "Clear"}
+            ok={!attention.view.poorQuality}
+          />
+        </div>
+      )}
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
         <div className="rounded-2xl border border-primary-200/35 bg-dark-200/70 p-4">
@@ -386,17 +438,18 @@ const InterviewRoom = ({
             >
               {media.micEnabled ? "Mute mic" : "Unmute mic"}
             </button>
-            <button
-              type="button"
-              className="rounded-full bg-dark-200 px-4 py-2 text-sm text-primary-200"
-              onClick={media.toggleCamera}
-              aria-pressed={!media.cameraEnabled}
-              aria-label={
-                media.cameraEnabled ? "Turn your camera off" : "Turn your camera on"
-              }
-            >
-              {media.cameraEnabled ? "Turn camera off" : "Turn camera on"}
-            </button>
+            {!media.cameraLive && (
+              <button
+                type="button"
+                className="rounded-full bg-dark-200 px-4 py-2 text-sm text-primary-200"
+                onClick={() => void media.retryCamera()}
+              >
+                Restore required camera
+              </button>
+            )}
+            <span className="rounded-full border border-primary-200/20 bg-primary-200/5 px-4 py-2 text-xs font-medium text-primary-100">
+              Camera required during interview
+            </span>
             <button
               type="button"
               className="btn-disconnect"
@@ -420,3 +473,15 @@ const InterviewRoom = ({
 };
 
 export default InterviewRoom;
+
+function MonitorCheck({ label, value, ok }: { label: string; value: string; ok: boolean }) {
+  return (
+    <div className={cn("proctor-check", ok ? "is-ok" : "is-warning")}>
+      <span className="proctor-check-dot" aria-hidden />
+      <span>
+        <span className="block text-[10px] font-semibold uppercase tracking-[0.14em] text-light-100/60">{label}</span>
+        <span className="mt-0.5 block text-xs font-semibold text-white">{value}</span>
+      </span>
+    </div>
+  );
+}

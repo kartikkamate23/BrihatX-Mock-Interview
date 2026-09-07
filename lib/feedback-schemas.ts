@@ -21,8 +21,32 @@ import type { InterviewType } from "@/lib/interview-types";
  * that uses these passes `structuredOutputs: false` to fall back to tool mode.
  */
 
+export const questionReviewSchema = z.object({
+  question: z.string().describe("The substantive interviewer question copied verbatim from the transcript."),
+  candidateAnswer: z
+    .string()
+    .describe("The candidate's response copied verbatim from the transcript. Use 'No answer provided.' when appropriate."),
+  score: z.number().describe("Quality of this answer from 0 to 100."),
+  whatWasGood: z
+    .array(z.string())
+    .describe("Specific strengths in this answer. Empty when there were none."),
+  mistakes: z
+    .array(z.string())
+    .describe("Specific errors, omissions, unclear claims, or communication problems in this answer."),
+  howToImprove: z
+    .array(z.string())
+    .describe("Concrete actions that would make this exact answer stronger."),
+  improvedAnswer: z
+    .string()
+    .describe("A stronger example answer to this exact question, grounded in known context."),
+});
+
 /** Technical and communication interviews keep the original five categories. */
-export const standardFeedbackSchema = feedbackSchema;
+export const standardFeedbackSchema = feedbackSchema.extend({
+  questionReviews: z
+    .array(questionReviewSchema)
+    .describe("One review for every substantive interviewer question in transcript order."),
+});
 
 const scored = <T extends string>(name: T) =>
   z.object({
@@ -67,6 +91,9 @@ export const visaFeedbackSchema = z.object({
     .describe(
       "A short summary of how the practice session went. Never state or imply a real visa outcome."
     ),
+  questionReviews: z
+    .array(questionReviewSchema)
+    .describe("One review for every substantive officer question in transcript order."),
   visa: z.object({
     strongAnswers: z
       .array(visaAnswerNote)
@@ -138,6 +165,9 @@ export const resumeFeedbackSchema = z.object({
   strengths: z.array(z.string()),
   areasForImprovement: z.array(z.string()),
   finalAssessment: z.string(),
+  questionReviews: z
+    .array(questionReviewSchema)
+    .describe("One review for every substantive interviewer question in transcript order."),
   resume: z.object({
     strongAnswers: z
       .array(visaAnswerNote)

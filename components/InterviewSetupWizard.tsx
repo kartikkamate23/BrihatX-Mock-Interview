@@ -25,6 +25,7 @@ import { toast } from "sonner";
 
 import ResumeUpload, { type AnalysedResume } from "@/components/ResumeUpload";
 import RoleSelector from "@/components/RoleSelector";
+import CommunicationPracticeSetup from "@/components/CommunicationPracticeSetup";
 import { createInterviewFromSetup } from "@/lib/actions/session.action";
 import type { InterviewAccess } from "@/lib/actions/plan.action";
 import {
@@ -145,9 +146,12 @@ const InterviewSetupWizard = ({ access, initialType = "technical" }: Props) => {
 
   const isVisa = interviewType === "visa";
   const isResume = interviewType === "resume";
+  const isCommunication = interviewType === "communication";
   const visaCategory = getVisaCategory(visaTypeId);
 
-  const steps = isVisa
+  const steps = isCommunication
+    ? (["Type", "Select Options"] as const)
+    : isVisa
     ? (["Type", "Visa", "Officer", "Details", "Duration", "Terms"] as const)
     : isResume
       ? (["Type", "Resume", "Role", "Topics", "Experience", "Interviewer", "Duration", "Terms"] as const)
@@ -245,6 +249,8 @@ const InterviewSetupWizard = ({ access, initialType = "technical" }: Props) => {
   const stepComplete = (() => {
     switch (stepName) {
       case "Type":
+        return true;
+      case "Select Options":
         return true;
       case "Resume":
         // The only step that genuinely blocks: a resume interview with no
@@ -452,6 +458,10 @@ const InterviewSetupWizard = ({ access, initialType = "technical" }: Props) => {
             })}
           </div>
         </section>
+      )}
+
+      {stepName === "Select Options" && (
+        <CommunicationPracticeSetup access={access} onCancel={() => setStep(0)} />
       )}
 
       {stepName === "Resume" && (
@@ -929,7 +939,7 @@ const InterviewSetupWizard = ({ access, initialType = "technical" }: Props) => {
         </section>
       )}
 
-      <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+      {stepName !== "Select Options" && <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
         <button
           type="button"
           onClick={() => setStep((s) => Math.max(0, s - 1))}
@@ -959,7 +969,7 @@ const InterviewSetupWizard = ({ access, initialType = "technical" }: Props) => {
             {submitting ? "Preparing…" : <>Review & start <ChevronRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" /></>}
           </button>
         )}
-      </div>
+      </div>}
 
       {!stepComplete && (
         <p className="text-xs text-light-100" aria-live="polite">

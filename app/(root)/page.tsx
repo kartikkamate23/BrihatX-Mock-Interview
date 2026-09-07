@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ArrowRight, BriefcaseBusiness, FileText, MessageCircle, Plane } from "lucide-react";
+import { ArrowRight, BriefcaseBusiness, ChartNoAxesCombined, CheckCircle2, FileText, MessageCircle, Plane, SlidersHorizontal, Video } from "lucide-react";
 
 import InterviewList from "@/components/InterviewList";
 import PracticeStats from "@/components/PracticeStats";
@@ -81,13 +81,20 @@ async function Home() {
   return (
     <>
       <section className="dashboard-hero animate-rise" aria-labelledby="dashboard-welcome">
-        <div className="relative z-10 flex max-w-2xl flex-col gap-5">
-          <p className="text-sm font-medium text-primary-200">Your practice command centre</p>
+        <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center gap-5 text-center">
+          <div className="hero-proof">
+            <span className="flex -space-x-1" aria-hidden><i /><i /><i /></span>
+            <span className="text-warning-100">★★★★★</span>
+            <span>Real practice · actionable feedback</span>
+          </div>
           <div>
-            <h1 id="dashboard-welcome" className="text-3xl font-semibold tracking-tight text-white sm:text-5xl">
+            <p className="mb-3 text-sm font-semibold text-primary-200">AI mock interview practice</p>
+            <h1 id="dashboard-welcome" className="text-4xl font-semibold tracking-[-0.05em] text-white sm:text-6xl">
               {greeting}, {firstName} <span aria-hidden>👋</span>
             </h1>
-            <p className="mt-3 text-base sm:text-lg">Ready for your next interview?</p>
+            <p className="mx-auto mt-4 max-w-3xl text-base leading-7 text-light-100 sm:text-lg">
+              Ready for a realistic AI interview with strict camera discipline and actionable feedback?
+            </p>
           </div>
           {access && (
             <p className="text-sm text-light-100">
@@ -98,14 +105,27 @@ async function Home() {
           )}
           <div className="flex flex-col gap-3 sm:flex-row">
             <Button asChild className="btn-primary max-sm:w-full">
-              <Link href="/interview">Start New Interview <ArrowRight aria-hidden /></Link>
+              <Link href="/interview">Start Practicing Free <ArrowRight aria-hidden /></Link>
             </Button>
             <Button asChild className="btn-secondary max-sm:w-full">
-              <Link href="/interview?type=resume"><FileText aria-hidden /> Practice From Resume</Link>
+              <Link href="/interview?type=communication"><MessageCircle aria-hidden /> Communication Practice</Link>
             </Button>
           </div>
         </div>
         <div className="dashboard-orb" aria-hidden />
+      </section>
+
+      <section className="practice-journey animate-rise" aria-labelledby="practice-journey-title">
+        <div className="max-w-sm">
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary-200">Simple, focused preparation</p>
+          <h2 id="practice-journey-title" className="mt-2 text-white">Ace your next interview in 3 steps</h2>
+          <p className="mt-3 text-sm leading-6 text-light-100">Choose the role and format, complete a realistic live round, then use the scorecard to improve.</p>
+        </div>
+        <div className="journey-steps">
+          <JourneyStep number="01" title="Configure" text="Select role, difficulty, topics, duration, resume, or job context." icon={<SlidersHorizontal />} />
+          <JourneyStep number="02" title="Interview live" text="Speak naturally while the AI follows up and camera checks keep you interview-ready." icon={<Video />} />
+          <JourneyStep number="03" title="Improve" text="Review scores, strengths, weak answers, and a focused next-practice plan." icon={<ChartNoAxesCombined />} />
+        </div>
       </section>
 
       {mySummaries.length === 0 ? (
@@ -173,6 +193,20 @@ function QuickPractice({ href, title, description, icon }: {
         Set up practice <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
       </span>
     </Link>
+  );
+}
+
+function JourneyStep({ number, title, text, icon }: { number: string; title: string; text: string; icon: React.ReactNode }) {
+  return (
+    <div className="journey-step">
+      <div className="flex items-center justify-between">
+        <span className="journey-icon" aria-hidden>{icon}</span>
+        <span className="text-xs font-bold text-primary-200/70">STEP {number}</span>
+      </div>
+      <h3 className="mt-5 text-lg text-white">{title}</h3>
+      <p className="mt-2 text-sm leading-6 text-light-100/80">{text}</p>
+      <CheckCircle2 className="mt-4 size-4 text-primary-200" aria-hidden />
+    </div>
   );
 }
 

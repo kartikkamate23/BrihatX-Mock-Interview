@@ -52,7 +52,7 @@ const InterviewSession = ({
   const [minutes, setMinutes] = useState<number>(() =>
     allowed.includes(savedMinutes) ? savedMinutes : (allowed[0] ?? 5)
   );
-  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(interviewType === "communication");
   const [locked, setLocked] = useState(false);
   const searchParams = useSearchParams();
 
@@ -60,6 +60,7 @@ const InterviewSession = ({
   const level = getExperienceLevel(experienceLevel);
   const isVisa = interviewType === "visa";
   const isResume = interviewType === "resume";
+  const isCommunication = interviewType === "communication";
 
   const devOverride =
     process.env.NODE_ENV !== "production"
@@ -93,8 +94,22 @@ const InterviewSession = ({
 
   return (
     <div className="flex flex-col gap-6">
-      {!locked && (
-        <div className="dark-gradient flex flex-col gap-5 rounded-2xl p-6">
+      {!locked && !isCommunication && (
+        <div className="interview-briefing flex flex-col gap-6 rounded-3xl p-5 sm:p-7">
+          <div className="interview-stepper" aria-label="Interview progress">
+            <span className="is-complete"><b>1</b> Configure</span>
+            <span className="is-active"><b>2</b> Device check</span>
+            <span><b>3</b> Live interview</span>
+          </div>
+
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary-200">Real interview mode</p>
+            <h2 className="mt-2 text-2xl text-white sm:text-3xl">Prepare your interview space</h2>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-light-100">
+              Your camera is checked continuously on this device. Keep one face visible,
+              stay centered, use clear front lighting, and maintain eye contact with the camera.
+            </p>
+          </div>
           <div className="flex flex-wrap items-center gap-2">
             {isVisa ? (
               <>
@@ -204,6 +219,21 @@ const InterviewSession = ({
             )}
           </div>
 
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4" aria-label="Strict camera requirements">
+            {[
+              ["One person only", "A second face triggers an immediate high warning."],
+              ["Face always visible", "Leaving the frame or covering your face is flagged."],
+              ["Look at the camera", "Repeated head turns and off-camera gaze are recorded."],
+              ["Clear lighting", "Dark or unclear video triggers a visibility warning."],
+            ].map(([title, description]) => (
+              <div key={title} className="rounded-2xl border border-white/10 bg-white/[0.035] p-4">
+                <span className="mb-3 flex size-7 items-center justify-center rounded-full bg-primary-200/15 text-xs font-black text-primary-200">✓</span>
+                <p className="text-sm font-semibold text-white">{title}</p>
+                <p className="mt-1 text-xs leading-5 text-light-100/75">{description}</p>
+              </div>
+            ))}
+          </div>
+
           <label className="flex items-start gap-3 text-sm text-light-100">
             <input
               type="checkbox"
@@ -212,10 +242,10 @@ const InterviewSession = ({
               className="mt-1 size-4 accent-primary-200"
             />
             <span>
-              I understand this is a timed mock interview. My camera and
-              microphone will be used for the session, my answers will be
-              transcribed and scored, and attention monitoring runs in my browser
-              and no video is recorded or uploaded.
+              I understand this is a timed mock interview. My camera must remain
+              on, my answers will be transcribed and scored, and strict face,
+              visibility, and gaze checks run locally in my browser. No camera
+              video is recorded or uploaded.
             </span>
           </label>
 

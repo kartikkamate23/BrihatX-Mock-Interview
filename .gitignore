@@ -55,6 +55,7 @@ firebase-adminsdk*.json
 # local dev logs
 dev.log
 build.log
+/.tools/
 
 # ...but the placeholder template must be committed
 !.env.example

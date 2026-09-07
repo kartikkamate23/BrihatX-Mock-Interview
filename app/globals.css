@@ -5,8 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --color-success-100: #49de50;
-  --color-success-200: #42c748;
+  --color-success-100: #00e3bd;
+  --color-success-200: #00bd9d;
   --color-destructive-100: #f75353;
   --color-destructive-200: #c44141;
 
@@ -17,17 +17,17 @@
   --color-warning-100: #f0b23f;
   --color-warning-200: #c9902c;
 
-  --color-primary-100: #fff1e8;
-  --color-primary-200: #ffc19e;
+  --color-primary-100: #d9fff8;
+  --color-primary-200: #00e3bd;
 
-  --color-light-100: #d8d3cc;
-  --color-light-400: #918a82;
-  --color-light-600: #666059;
-  --color-light-800: #2b2926;
+  --color-light-100: #cbd6dd;
+  --color-light-400: #84939c;
+  --color-light-600: #52636e;
+  --color-light-800: #17242b;
 
-  --color-dark-100: #10100f;
-  --color-dark-200: #22211f;
-  --color-dark-300: #2a2825;
+  --color-dark-100: #020708;
+  --color-dark-200: #07161a;
+  --color-dark-300: #0c2228;
 
   --font-mona-sans: "Mona Sans", sans-serif;
 
@@ -70,37 +70,37 @@
 }
 
 .dark {
-  --background: #10100f;
-  --foreground: #f8f5f0;
-  --card: #191817;
-  --card-foreground: #f8f5f0;
-  --popover: #1d1c1a;
-  --popover-foreground: #f8f5f0;
-  --primary: #ffc19e;
-  --primary-foreground: #21140d;
-  --secondary: #262421;
-  --secondary-foreground: #f8f5f0;
-  --muted: #262421;
+  --background: #020708;
+  --foreground: #f5fbfa;
+  --card: #061216;
+  --card-foreground: #f5fbfa;
+  --popover: #07161a;
+  --popover-foreground: #f5fbfa;
+  --primary: #00e3bd;
+  --primary-foreground: #001a17;
+  --secondary: #0a1c21;
+  --secondary-foreground: #f5fbfa;
+  --muted: #0a1c21;
   --muted-foreground: var(--light-100);
-  --accent: #32261f;
-  --accent-foreground: #fff1e8;
+  --accent: #07302f;
+  --accent-foreground: #d9fff8;
   --destructive: oklch(0.704 0.191 22.216);
-  --border: rgb(255 244 235 / 11%);
-  --input: rgb(255 244 235 / 14%);
-  --ring: #ffc19e;
-  --chart-1: #ffc19e;
-  --chart-2: #d79b76;
-  --chart-3: #f0d5a7;
+  --border: rgb(210 255 248 / 12%);
+  --input: rgb(210 255 248 / 15%);
+  --ring: #00e3bd;
+  --chart-1: #00e3bd;
+  --chart-2: #00c9f2;
+  --chart-3: #8bf3df;
   --chart-4: #a8b88f;
   --chart-5: #cb8d7b;
-  --sidebar: #191817;
-  --sidebar-foreground: #f8f5f0;
-  --sidebar-primary: #ffc19e;
-  --sidebar-primary-foreground: #21140d;
-  --sidebar-accent: #2b2825;
-  --sidebar-accent-foreground: #fff1e8;
-  --sidebar-border: rgb(255 244 235 / 11%);
-  --sidebar-ring: #ffc19e;
+  --sidebar: #061216;
+  --sidebar-foreground: #f5fbfa;
+  --sidebar-primary: #00e3bd;
+  --sidebar-primary-foreground: #001a17;
+  --sidebar-accent: #0b252a;
+  --sidebar-accent-foreground: #d9fff8;
+  --sidebar-border: rgb(210 255 248 / 12%);
+  --sidebar-ring: #00e3bd;
 }
 
 @theme inline {
@@ -152,7 +152,7 @@
     font-feature-settings: "ss01" 1, "ss03" 1;
     /* Only the flat base sits here now. The warm glow that used to be a static
        radial gradient is drawn by .aurora instead, so it can move. */
-    background-image: linear-gradient(to bottom, #121210, #0c0c0b 52rem);
+    background-image: linear-gradient(to bottom, #020708, #041218 52rem);
     background-attachment: fixed;
   }
   p {
@@ -166,8 +166,8 @@
   }
 
   ::selection {
-    color: #21140d;
-    background: #ffc19e;
+    color: #001a17;
+    background: #00e3bd;
   }
 
   :focus-visible {
@@ -210,7 +210,7 @@
     left: -12rem;
     width: 48rem;
     height: 48rem;
-    background: radial-gradient(circle, rgb(255 193 158 / 0.15), transparent 62%);
+    background: radial-gradient(circle, rgb(0 227 189 / 0.16), transparent 62%);
     animation: aurora-drift-1 34s ease-in-out infinite;
   }
 
@@ -219,7 +219,7 @@
     right: -20rem;
     width: 42rem;
     height: 42rem;
-    background: radial-gradient(circle, rgb(220 143 103 / 0.13), transparent 64%);
+    background: radial-gradient(circle, rgb(0 148 255 / 0.16), transparent 64%);
     animation: aurora-drift-2 41s ease-in-out infinite;
   }
 
@@ -228,7 +228,7 @@
     left: 26%;
     width: 40rem;
     height: 40rem;
-    background: radial-gradient(circle, rgb(240 213 167 / 0.08), transparent 66%);
+    background: radial-gradient(circle, rgb(45 240 218 / 0.09), transparent 66%);
     animation: aurora-drift-3 47s ease-in-out infinite;
   }
 
@@ -238,8 +238,8 @@
     inset: -8%;
     display: block;
     background-image:
-      linear-gradient(rgb(255 244 235 / 0.022) 1px, transparent 1px),
-      linear-gradient(90deg, rgb(255 244 235 / 0.022) 1px, transparent 1px);
+      linear-gradient(rgb(202 255 247 / 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(202 255 247 / 0.025) 1px, transparent 1px);
     background-size: 46px 46px;
     /* Strongest at the top, gone by the fold, so it never sits behind body copy. */
     mask-image: radial-gradient(ellipse 90% 55% at 50% 0%, black, transparent 76%);
@@ -312,11 +312,11 @@
     @apply flex min-h-14 w-full items-center justify-center gap-1.5 rounded-md;
   }
   .btn-primary {
-    @apply w-fit !bg-primary-200 !text-[#21140d] hover:!bg-[#ffd1b7] !rounded-xl !font-bold px-5 cursor-pointer min-h-11 transition-[background-color,transform,box-shadow] active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-200;
-    box-shadow: 0 8px 24px -16px rgb(255 193 158 / 0.8);
+    @apply inline-flex w-fit items-center gap-2 !bg-gradient-to-r !from-[#00e3bd] !to-[#00c9f2] !text-[#001a17] hover:brightness-110 !rounded-full !font-bold px-6 cursor-pointer min-h-12 transition-[filter,transform,box-shadow] active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-200;
+    box-shadow: 0 12px 34px -18px rgb(0 227 189 / 0.85);
   }
   .btn-secondary {
-    @apply w-fit !bg-dark-200 !text-primary-100 hover:!bg-dark-300 !rounded-xl !font-bold px-5 cursor-pointer min-h-11 border border-white/10 transition-[background-color,transform] active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-200;
+    @apply w-fit !bg-transparent !text-white hover:!bg-white/[0.06] !rounded-full !font-bold px-6 cursor-pointer min-h-12 border border-white/45 transition-[background-color,transform] active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-200;
   }
 
   .btn-upload {
@@ -343,7 +343,7 @@
     }
 
     .btn {
-      @apply !w-full !bg-primary-200 !text-[#21140d] hover:!bg-[#ffd1b7] !rounded-xl !min-h-11 !font-bold !px-5 cursor-pointer;
+    @apply !w-full !bg-primary-200 !text-[#001a17] hover:brightness-110 !rounded-xl !min-h-11 !font-bold !px-5 cursor-pointer;
     }
   }
 
@@ -404,7 +404,7 @@
   }
 
   .dashboard-nav {
-    @apply sticky top-2 z-40 flex min-h-16 items-center justify-between gap-2 rounded-2xl border border-white/10 bg-[#151412]/95 px-2.5 py-2 shadow-2xl shadow-black/25 backdrop-blur-lg sm:top-4 sm:px-3;
+    @apply sticky top-2 z-40 flex min-h-16 items-center justify-between gap-2 rounded-2xl border border-white/10 bg-black/95 px-2.5 py-2 shadow-2xl shadow-black/25 backdrop-blur-lg sm:top-4 sm:px-3;
   }
 
   .brand-link {
@@ -454,11 +454,133 @@
   }
 
   .dashboard-hero {
-    @apply relative isolate overflow-hidden rounded-3xl border border-primary-200/15 bg-gradient-to-br from-[#29231f] via-[#191816] to-[#10100f] px-5 py-8 shadow-2xl shadow-black/20 sm:px-10 sm:py-12;
+    @apply relative isolate overflow-hidden rounded-[2.5rem] border border-primary-200/15 px-5 py-12 shadow-2xl shadow-black/30 sm:px-10 sm:py-16;
+    background:
+      radial-gradient(circle at 55% 110%, rgb(0 67 184 / 0.72), transparent 45%),
+      radial-gradient(circle at 30% 20%, rgb(0 227 189 / 0.14), transparent 30%),
+      #000;
   }
 
   .dashboard-orb {
-    @apply absolute -right-16 -top-24 size-80 rounded-full bg-primary-200/15 blur-3xl;
+    @apply absolute -right-16 -top-24 size-80 rounded-full bg-[#00c9f2]/15 blur-3xl;
+  }
+
+  .hero-proof {
+    @apply inline-flex flex-wrap items-center justify-center gap-2 rounded-full border border-white/20 bg-white/[0.07] px-4 py-2 text-[11px] font-semibold text-white/85 backdrop-blur-sm sm:text-xs;
+  }
+
+  .hero-proof i {
+    @apply block size-5 rounded-full border-2 border-[#091316];
+    background: linear-gradient(135deg, #00e3bd, #005ecb);
+  }
+
+  .hero-gradient-text {
+    color: transparent;
+    background: linear-gradient(90deg, #d9fff8, #00e3bd 48%, #00c9f2);
+    background-clip: text;
+    -webkit-background-clip: text;
+  }
+
+  .practice-journey {
+    @apply grid gap-8 rounded-3xl border border-white/10 bg-gradient-to-br from-[#07161a] to-[#031013] p-6 shadow-2xl shadow-black/20 lg:grid-cols-[0.75fr_2fr] lg:items-center lg:p-9;
+  }
+
+  .journey-steps {
+    @apply grid gap-3 md:grid-cols-3;
+  }
+
+  .journey-step {
+    @apply min-h-52 rounded-2xl border border-white/10 bg-black/25 p-5 transition-[transform,border-color,background-color] hover:-translate-y-1 hover:border-primary-200/35 hover:bg-black/40;
+  }
+
+  .journey-icon {
+    @apply flex size-10 items-center justify-center rounded-xl bg-primary-200/10 text-primary-200 [&_svg]:size-5;
+  }
+
+  .camera-stage {
+    @apply rounded-[1.55rem] border border-white/10 bg-gradient-to-br from-primary-200/30 via-white/10 to-[#00c9f2]/20 p-[2px] shadow-2xl shadow-black/30 transition-[border-color,box-shadow];
+  }
+
+  .camera-stage-warning {
+    @apply border-warning-100/70 shadow-warning-100/10;
+  }
+
+  .camera-stage-critical {
+    @apply border-destructive-100 shadow-destructive-100/20;
+  }
+
+  .proctor-warning {
+    @apply rounded-2xl border border-warning-100/80 bg-[#9b5f00]/95 text-white shadow-2xl shadow-black/35 backdrop-blur-md;
+    animation: warningEnter 180ms ease-out both;
+  }
+
+  .proctor-warning.is-critical {
+    @apply border-destructive-100 bg-[#a51d2d]/95;
+  }
+
+  .proctor-status-grid {
+    @apply grid grid-cols-2 gap-2 lg:grid-cols-4;
+  }
+
+  .proctor-check {
+    @apply flex items-center gap-3 rounded-xl border bg-white/[0.025] px-3 py-3;
+  }
+
+  .proctor-check.is-ok {
+    @apply border-primary-200/15;
+  }
+
+  .proctor-check.is-warning {
+    @apply border-destructive-100/45 bg-destructive-100/[0.06];
+  }
+
+  .proctor-check-dot {
+    @apply size-2.5 shrink-0 rounded-full bg-primary-200 shadow-[0_0_12px_rgba(0,227,189,0.7)];
+  }
+
+  .proctor-check.is-warning .proctor-check-dot {
+    @apply bg-destructive-100 shadow-[0_0_12px_rgba(247,83,83,0.7)];
+  }
+
+  .interview-briefing {
+    @apply border border-primary-200/15 shadow-2xl shadow-black/25;
+    background:
+      radial-gradient(circle at 100% 0%, rgb(0 201 242 / 0.12), transparent 28rem),
+      linear-gradient(145deg, #07161a, #020708);
+  }
+
+  .communication-options {
+    @apply flex flex-col gap-6 rounded-3xl border border-primary-200/15 bg-[#061216]/85 p-4 shadow-2xl shadow-black/30 sm:p-6;
+  }
+
+  .communication-mode-card {
+    @apply min-h-48 rounded-2xl border border-white/10 bg-white/[0.025] p-5 text-left transition-[transform,border-color,background-color,box-shadow] hover:-translate-y-1 hover:border-primary-200/30 hover:bg-white/[0.045] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-200;
+  }
+
+  .communication-mode-card.is-selected {
+    @apply border-primary-200/65 bg-primary-200/[0.07] shadow-[inset_3px_0_0_#00e3bd];
+  }
+
+  .interview-stepper {
+    @apply grid grid-cols-3 overflow-hidden rounded-xl border border-white/10 bg-black/30 text-center text-[10px] font-semibold text-light-100/50 sm:text-xs;
+  }
+
+  .interview-stepper span {
+    @apply relative flex items-center justify-center gap-2 border-r border-white/10 px-2 py-3 last:border-r-0;
+  }
+
+  .interview-stepper b {
+    @apply flex size-5 items-center justify-center rounded-full border border-white/15 text-[9px];
+  }
+
+  .interview-stepper .is-complete,
+  .interview-stepper .is-active {
+    @apply text-primary-100;
+  }
+
+  .interview-stepper .is-complete b,
+  .interview-stepper .is-active b {
+    @apply border-primary-200 bg-primary-200 text-[#001a17];
   }
 
   .empty-dashboard {
@@ -474,17 +596,17 @@
   }
 
   .analytics-column {
-    @apply block w-full origin-bottom rounded-t-md bg-gradient-to-t from-[#c7805d] to-[#ffd6b9] transition-[filter] group-hover:brightness-110;
+    @apply block w-full origin-bottom rounded-t-md bg-gradient-to-t from-[#00a98f] to-[#00e3bd] transition-[filter] group-hover:brightness-110;
   }
 
   .setup-shell {
     position: relative;
     isolation: isolate;
     overflow: hidden;
-    border: 1px solid rgb(255 220 199 / 0.14);
+    border: 1px solid rgb(0 227 189 / 0.16);
     background:
-      radial-gradient(circle at 92% 0%, rgb(255 193 158 / 0.105), transparent 26rem),
-      linear-gradient(155deg, rgb(28 27 25 / 0.99), rgb(15 15 14 / 0.99));
+      radial-gradient(circle at 92% 0%, rgb(0 201 242 / 0.12), transparent 26rem),
+      linear-gradient(155deg, rgb(7 22 26 / 0.99), rgb(2 7 8 / 0.99));
     box-shadow: 0 28px 80px -40px rgb(0 0 0 / 0.9);
   }
 
@@ -503,8 +625,8 @@
   }
 
   .setup-progress-fill {
-    background: linear-gradient(90deg, #dc8f67, #ffc19e);
-    box-shadow: 0 0 16px rgb(255 193 158 / 0.32);
+    background: linear-gradient(90deg, #00e3bd, #00c9f2);
+    box-shadow: 0 0 16px rgb(0 227 189 / 0.32);
     transition: width 300ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
@@ -518,7 +640,7 @@
 
   .setup-choice:not(:disabled):hover {
     transform: translateY(-3px);
-    border-color: rgb(255 193 158 / 0.34);
+    border-color: rgb(0 227 189 / 0.34);
     box-shadow: 0 16px 32px -22px rgb(0 0 0 / 0.9);
   }
 
@@ -527,7 +649,7 @@
   }
 
   .setup-choice.is-selected {
-    box-shadow: inset 3px 0 0 #ffc19e, 0 16px 36px -30px rgb(255 193 158 / 0.65);
+    box-shadow: inset 3px 0 0 #00e3bd, 0 16px 36px -30px rgb(0 227 189 / 0.65);
   }
 
   .setup-chip {
@@ -596,7 +718,7 @@
 }
 
 @utility blue-gradient {
-  @apply bg-gradient-to-l from-[#fff8f3] to-[#ffc19e];
+  @apply bg-gradient-to-l from-[#d9fff8] to-[#00e3bd];
 }
 
 @utility flex-center {
@@ -616,6 +738,11 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+@keyframes warningEnter {
+  from { opacity: 0; transform: translateY(-8px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 /* ---------------------------------------------------------------------------

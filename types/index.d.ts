@@ -12,6 +12,8 @@ interface Feedback {
   strengths: string[];
   areasForImprovement: string[];
   finalAssessment: string;
+  /** Present on newly generated feedback; older reports predate this feature. */
+  questionReviews?: QuestionReview[];
   createdAt: string;
   /** Present only on visa interview feedback. */
   visa?: VisaFeedbackDetail;
@@ -19,6 +21,16 @@ interface Feedback {
   resume?: ResumeFeedbackDetail;
   session?: InterviewSessionMeta;
   attention?: InterviewAttentionSummary;
+}
+
+interface QuestionReview {
+  question: string;
+  candidateAnswer: string;
+  score: number;
+  whatWasGood: string[];
+  mistakes: string[];
+  howToImprove: string[];
+  improvedAnswer: string;
 }
 
 /**
